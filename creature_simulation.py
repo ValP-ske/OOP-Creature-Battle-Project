@@ -1,3 +1,5 @@
+import random
+
 class Creature:
     def __init__(self, name, hp, attack_power):
         self.name = name
@@ -63,6 +65,34 @@ class FlyingCreature(Creature):
         if target.hp < 0:
             target.hp = 0
         print(f"{target.name} HP is now {target.hp}")
+
+class FireCreature(Creature):
+    def __init__(self, name, hp, attack_power):
+        super().__init__(name, hp, attack_power)
+        self.fire_level = 0
+
+    def emit_fire(self, new_fire_level):
+        if new_fire_level in range(1,101):
+            self.fire_level = new_fire_level
+        else:
+            raise ValueError("New fire level wasn't in the 0-100 range")
+        print(f"{self.name} emit fire to level {self.fire_level}.")
+
+    def attack(self, target):
+        if not self.is_alive():
+            print(f"{self.name} cannot attack because it is defeated.")
+            return
+
+    # +1 damage per 10 fire levels
+        fire_bonus = self.fire_level // 10
+        total_power = self.attack_power + fire_bonus
+        print(f"{self.name} charging their fire power to level {self.fire_level} (bonus damage +{fire_bonus})!")
+        print(f"{self.name} performs an fire attack on {target.name} for {total_power} damage!")
+        target.hp -= total_power
+        if target.hp < 0:
+            target.hp = 0
+
+
 
 if __name__ == "__main__":
     print("=== Creature Class Tests ===\n")
@@ -136,6 +166,19 @@ if __name__ == "__main__":
     hawk.attack(dummy)
     print(f"Dummy HP should be 32 → Actual: {dummy.hp}")
     dummy.attack(hawk)
+    print()
+    print("=== Tests Completed ===")
+    print()
+
+    print("=== FireCreature Tests ===\n")
+    salamander = FireCreature("Salamander", 40, 5)
+    salamander.emit_fire(25)
+    print(f"Fire level should be 50 → Actual: {salamander.fire_level}")
+
+    dummy = Creature("Practice Dummy", 40, 0)
+    salamander.attack(dummy)
+    print(f"Dummy HP should be 32 → Actual: {dummy.hp}")
+    dummy.attack(salamander)
     print()
     print("=== Tests Completed ===")
     print()
